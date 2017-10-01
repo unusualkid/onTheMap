@@ -12,17 +12,17 @@ struct StudentLocation {
     
     // MARK: Properties
 
-    let objectId: String
-    let uniqueKey: String
-    let firstName: String
-    let lastName: String
-    let mapString: String
-    let mediaURL: String
-    let latitude: Float
-    let longititude: Float
-//    let createdAt: Date
-//    let updatedAt: Date
-//    let ACL: String
+    var objectId: String
+    var uniqueKey: String
+    var firstName: String
+    var lastName: String
+    var mapString: String
+    var mediaURL: String
+    var latitude: Float
+    var longititude: Float
+//    var createdAt: Date
+//    var updatedAt: Date
+//    var ACL: String
     
     
 }

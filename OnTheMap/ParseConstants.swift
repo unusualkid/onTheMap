@@ -19,10 +19,8 @@ extension ParseClient {
         
         // MARK: URLs
         static let ApiScheme = "https"
-        static let ApiHost = "api.themoviedb.org"
-        static let ApiPath = "/3"
-        static let AuthorizationURL = "https://www.themoviedb.org/authenticate/"
-        static let AccountURL = "https://www.themoviedb.org/account/"
+        static let ApiHost = "parse.udacity.com"
+        static let ApiPath = "/parse/classes/StudentLocation"
     }
     
     // MARK: Methods
