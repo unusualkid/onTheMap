@@ -19,10 +19,10 @@ class ParseClient : NSObject {
         super.init()
     }
     
-    func getStudentLocations(completionHandlerForGetStudentLocations: @escaping (_ result: Data?, _ error: String?) -> Void) -> URLSessionDataTask {
+    func getStudentLocations(completionHandlerForGetStudentLocations: @escaping (_ result: [StudentLocation]?, _ error: String?) -> Void) -> URLSessionDataTask {
         /* 1. Set the parameters */
         // There are none...
-        var parameters = [String : Any]()
+        var parameters = ["limit" : 10]
         
         /* 2/3. Build the URL, Configure the request */
         var request = URLRequest(url: parseURLFromParameters(parameters as [String:AnyObject]))
@@ -63,12 +63,38 @@ class ParseClient : NSObject {
                 sendError("Could not parse the data as JSON: '\(data)'")
                 return
             }
+            
             print(parsedResult)
-            completionHandlerForGetStudentLocations(data, nil)
+
+            /* GUARD: Is the "result" key in our result? */
+            guard let results = parsedResult[ParseClient.ResponseKeys.Results] as? [[String:AnyObject]] else {
+                sendError("Cannot find key '\(ParseClient.ResponseKeys.Results)' in \(parsedResult)")
+                return
+            }
+            
+            let studentLocations = ParseClient.studentLocationsFromResults(results)
+
+            for studentLocation in studentLocations {
+                print(studentLocation)
+            }
+            
+            completionHandlerForGetStudentLocations(studentLocations, nil)
         }
         task.resume()
         
         return task
+    }
+    
+    static func studentLocationsFromResults(_ results: [[String:AnyObject]]) -> [StudentLocation] {
+        
+        var studentLocations = [StudentLocation]()
+        
+        // iterate through array of dictionaries, each Movie is a dictionary
+        for result in results {
+            studentLocations.append(StudentLocation(dictionary: result))
+        }
+        
+        return studentLocations
     }
     
     // create a URL from parameters

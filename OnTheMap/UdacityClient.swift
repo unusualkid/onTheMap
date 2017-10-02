@@ -228,9 +228,6 @@ class UdacityClient: NSObject {
             }
             
             self.sessionID = ""
-            print("parsedResult: ")
-            print(parsedResult)
-            print("sessionID: " + self.sessionID!)
             completionHandlerForLogout(true, nil)
         }
         

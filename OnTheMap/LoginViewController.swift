@@ -18,7 +18,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        subscribeToKeyboardNotifications()
     }
     
     override func viewDidLoad() {

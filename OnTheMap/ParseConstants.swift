@@ -23,6 +23,10 @@ extension ParseClient {
         static let ApiPath = "/parse/classes/StudentLocation"
     }
     
+    struct ResponseKeys {
+        static let Results = "results"
+    }
+    
     // MARK: Methods
     struct Methods {
         
@@ -45,7 +49,17 @@ extension ParseClient {
     
     // MARK: JSON Response Keys
     struct JSONResponseKeys {
-        
+        static let ObjectId = "objectId"
+        static let UniqueKey = "uniqueKey"
+        static let FirstName = "firstName"
+        static let LastName = "lastName"
+        static let MapString = "mapString"
+        static let MediaUrl = "mediaURL"
+        static let Latitude = "latitude"
+        static let Longitude = "longitude"
+        static let CreatedAt = "createdAt"
+        static let UpdatedAt = "updatedAt"
+//        static let ACL: String
     }
 
 }
