@@ -21,8 +21,8 @@
 		3C8153B41F7B72F5008ACBD3 /* GCDBlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8153B31F7B72F5008ACBD3 /* GCDBlackBox.swift */; };
 		3C8153B81F7D01CD008ACBD3 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8153B71F7D01CD008ACBD3 /* ListViewController.swift */; };
 		3C8153BA1F7D48A3008ACBD3 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8153B91F7D48A3008ACBD3 /* MapViewController.swift */; };
-		3CD75B021F7E13B700496D04 /* MapViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD75B011F7E13B700496D04 /* MapViewControllerDelegate.swift */; };
-		3CD75B041F7E3B0D00496D04 /* InfoPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD75B031F7E3B0D00496D04 /* InfoPostingViewController.swift */; };
+		3CAFB9BC1F83834000EEEF82 /* PostingConfirmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CAFB9BB1F83834000EEEF82 /* PostingConfirmViewController.swift */; };
+		3CD75B041F7E3B0D00496D04 /* PostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD75B031F7E3B0D00496D04 /* PostingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,8 +42,8 @@
 		3C8153B31F7B72F5008ACBD3 /* GCDBlackBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDBlackBox.swift; sourceTree = "<group>"; };
 		3C8153B71F7D01CD008ACBD3 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		3C8153B91F7D48A3008ACBD3 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		3CD75B011F7E13B700496D04 /* MapViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerDelegate.swift; sourceTree = "<group>"; };
-		3CD75B031F7E3B0D00496D04 /* InfoPostingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPostingViewController.swift; sourceTree = "<group>"; };
+		3CAFB9BB1F83834000EEEF82 /* PostingConfirmViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingConfirmViewController.swift; sourceTree = "<group>"; };
+		3CD75B031F7E3B0D00496D04 /* PostingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,9 +107,9 @@
 			children = (
 				3C2C4A211F6D2A540091F4D8 /* LoginViewController.swift */,
 				3C8153B91F7D48A3008ACBD3 /* MapViewController.swift */,
-				3CD75B011F7E13B700496D04 /* MapViewControllerDelegate.swift */,
 				3C8153B71F7D01CD008ACBD3 /* ListViewController.swift */,
-				3CD75B031F7E3B0D00496D04 /* InfoPostingViewController.swift */,
+				3CD75B031F7E3B0D00496D04 /* PostingViewController.swift */,
+				3CAFB9BB1F83834000EEEF82 /* PostingConfirmViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -237,13 +237,13 @@
 			files = (
 				3C8153BA1F7D48A3008ACBD3 /* MapViewController.swift in Sources */,
 				3C04D9FF1F72554600C92B1A /* StudentLocation.swift in Sources */,
-				3CD75B021F7E13B700496D04 /* MapViewControllerDelegate.swift in Sources */,
 				3C2C4A3E1F6D32D60091F4D8 /* ParseConvenience.swift in Sources */,
+				3CAFB9BC1F83834000EEEF82 /* PostingConfirmViewController.swift in Sources */,
 				3C2C4A221F6D2A540091F4D8 /* LoginViewController.swift in Sources */,
 				3C2C4A201F6D2A540091F4D8 /* AppDelegate.swift in Sources */,
 				3C8153B81F7D01CD008ACBD3 /* ListViewController.swift in Sources */,
 				3C8153B01F7A51D6008ACBD3 /* UdacityConstants.swift in Sources */,
-				3CD75B041F7E3B0D00496D04 /* InfoPostingViewController.swift in Sources */,
+				3CD75B041F7E3B0D00496D04 /* PostingViewController.swift in Sources */,
 				3C2C4A3C1F6D327E0091F4D8 /* ParseClient.swift in Sources */,
 				3C4E906D1F7A0A93006A8C35 /* UdacityClient.swift in Sources */,
 				3C8153B41F7B72F5008ACBD3 /* GCDBlackBox.swift in Sources */,

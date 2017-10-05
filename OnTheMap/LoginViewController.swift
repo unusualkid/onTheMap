@@ -23,8 +23,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         activityIndicator.alpha = 0.0
-        self.usernameTextField.delegate = self
-        self.passwordTextField.delegate = self
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tap(gesture:)))
         view.addGestureRecognizer(tapGesture)
     }
@@ -33,7 +31,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.viewWillDisappear(animated)
     }
     
-    @IBAction func loginPressed(_ sender: Any) {
+    @IBAction func loginButtonPressed(_ sender: Any) {
         if usernameTextField.text!.isEmpty || passwordTextField.text!.isEmpty {
             displayAlert(errorString: "Username or password empty.")
         } else {
@@ -60,6 +58,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         present(controller, animated: true, completion: nil)
     }
     
+    // Display alert with error message
     private func displayAlert(errorString: String?) {
         let controller = UIAlertController()
         

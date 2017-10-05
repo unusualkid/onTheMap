@@ -13,7 +13,7 @@ struct StudentLocation {
     // MARK: Properties
     
     var objectId: String
-    var uniqueKey: String
+    var uniqueKey: String?
     var firstName: String
     var lastName: String
     var mapString: String?
@@ -27,7 +27,11 @@ struct StudentLocation {
     // construct a StudentLocation from a dictionary
     init(dictionary: [String:AnyObject]) {
         objectId = dictionary[ParseClient.JSONResponseKeys.ObjectId] as! String
-        uniqueKey = dictionary[ParseClient.JSONResponseKeys.UniqueKey] as! String
+        if let uniqueKey = dictionary[ParseClient.JSONResponseKeys.UniqueKey] as? String {
+            self.uniqueKey = uniqueKey
+        } else {
+            self.uniqueKey = ""
+        }
         firstName = dictionary[ParseClient.JSONResponseKeys.FirstName] as! String
         lastName = dictionary[ParseClient.JSONResponseKeys.LastName] as! String
         if let longitude = dictionary[ParseClient.JSONResponseKeys.Longitude] as? Float {

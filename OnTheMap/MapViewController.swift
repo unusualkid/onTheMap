@@ -27,8 +27,8 @@ class MapViewController: UIViewController {
         // create and set the logout button
         parent!.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
         
-        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
-        let addPinButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addPin))
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshButtonPressed))
+        let addPinButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addPinButtonPressed))
         parent!.navigationItem.rightBarButtonItems = [addPinButton, refreshButton]
         
         ParseClient.sharedInstance().getStudentLocations() { (studentLocations, error) in
@@ -90,14 +90,13 @@ class MapViewController: UIViewController {
         }
     }
     
-    @objc func refresh() {
-        
+    @objc func refreshButtonPressed() {
+        print("refresh button pressed")
     }
     
-    @objc func addPin() {
-        let controller = storyboard!.instantiateViewController(withIdentifier: "InfoPostingViewController") as! UIViewController
+    @objc func addPinButtonPressed() {
+        let controller = storyboard!.instantiateViewController(withIdentifier: "PostingViewController") as! PostingViewController
         navigationController!.pushViewController(controller, animated: true)
-        //        present(controller, animated: true, completion: nil)
     }
     
     private func displayAlert(errorString: String?) {
@@ -114,3 +113,38 @@ class MapViewController: UIViewController {
     }
 }
 
+extension MapViewController: MKMapViewDelegate {
+    
+    // Here we create a view with a "right callout accessory view". You might choose to look into other
+    // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
+    // method in TableViewDataSource.
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = .red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    // This delegate method is implemented to respond to taps. It opens the system browser
+    // to the URL specified in the annotationViews subtitle property.
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if control == view.rightCalloutAccessoryView {
+            let app = UIApplication.shared
+            if let toOpen = view.annotation?.subtitle! {
+                app.open(URL(string: toOpen)!, options: [:], completionHandler: nil)
+            }
+        }
+    }
+}

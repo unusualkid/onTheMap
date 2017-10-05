@@ -28,8 +28,10 @@ extension ParseClient {
     }
     
     // MARK: Methods
-    struct Methods {
-        
+    struct HTTPMethods {
+        static let Get = "GET"
+        static let Post = "POST"
+        static let Put = "PUT"
     }
 
     // MARK: URL Keys
@@ -42,12 +44,7 @@ extension ParseClient {
         
     }
     
-    // MARK: JSON Body Keys
-    struct JSONBodyKeys {
-
-    }
-    
-    // MARK: JSON Response Keys
+    // MARK: JSON Keys
     struct JSONResponseKeys {
         static let ObjectId = "objectId"
         static let UniqueKey = "uniqueKey"
