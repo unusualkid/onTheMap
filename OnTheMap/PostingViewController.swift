@@ -7,15 +7,17 @@
 //
 
 import UIKit
+import MapKit
 
 class PostingViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var urlTextField: UITextField!
+    @IBOutlet weak var findLocationButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        activityIndicator.alpha = 0.0
+        animateActivityIndicator(animated: false)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tap(gesture:)))
         view.addGestureRecognizer(tapGesture)
     }
@@ -31,16 +33,60 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         } else if urlTextField.text!.prefix(8) != "https://" {
             displayAlert(errorString: "Please enter url, starting with 'https://'")
         } else {
-            activityIndicator.alpha = 1.0
-            activityIndicator.startAnimating()
-            let controller = storyboard!.instantiateViewController(withIdentifier: "PostingConfirmViewController") as! PostingConfirmViewController
-            if let location = locationTextField.text {
-                controller.locationName = location
+
+            getMyLocation(completionHandler: { (success, errorString) in
+                if (success) {
+                    print("Successfully set your location data")
+                    
+                    let controller = self.storyboard!.instantiateViewController(withIdentifier: "PostingConfirmViewController") as! PostingConfirmViewController
+                    self.navigationController!.pushViewController(controller, animated: true)
+                    
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.alpha = 0.0
+                } else {
+                    
+                    performUIUpdatesOnMain {
+//                        self.setUIEnabled(false)
+                        self.displayAlert(errorString: errorString!)
+//                        self.setUIEnabled(true)
+                        self.activityIndicator.stopAnimating()
+                        self.activityIndicator.alpha = 0.0
+                    }
+                }
+            })
+        }
+    }
+    
+    func getMyLocation(completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(locationTextField.text!) { (placemark, error) in
+            performUIUpdatesOnMain {
+                if let error = error {
+                    print("Could not geocode the entered location: \(error)")
+                    completionHandler(false, error.localizedDescription)
+                    return
+                }
+                
+                guard let placemark = placemark else {
+                    print("No placemarks found")
+                    completionHandler(false, error?.localizedDescription)
+                    return
+                }
+                
+                guard let latitude = placemark[0].location?.coordinate.latitude else {
+                    print("This latitude placemark is: \(placemark)")
+                    completionHandler(false, error?.localizedDescription)
+                    return
+                }
+                
+                guard let longitude = placemark[0].location?.coordinate.longitude else {
+                    print("This longitude placemark is: \(placemark)")
+                    completionHandler(false, error?.localizedDescription)
+                    return
+                }
+                
+                completionHandler(true, nil)
             }
-            if let url = urlTextField.text {
-                controller.url = url
-            }
-            navigationController!.pushViewController(controller, animated: true)
         }
     }
     
@@ -72,5 +118,27 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return true;
+    }
+    
+//    func setUIEnabled(_ enabled: Bool) {
+//        locationTextField.isEnabled = enabled
+//        urlTextField.isEnabled = enabled
+//        findLocationButton.isEnabled = enabled
+//
+//        if enabled {
+//            findLocationButton.alpha = 1.0
+//        } else {
+//            findLocationButton.alpha = 0.5
+//        }
+//    }
+    
+    func animateActivityIndicator(animated: Bool) {
+        if animated {
+            activityIndicator.alpha = 1.0
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.alpha = 0.0
+            activityIndicator.stopAnimating()
+        }
     }
 }

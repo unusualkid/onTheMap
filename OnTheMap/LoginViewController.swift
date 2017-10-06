@@ -22,7 +22,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        activityIndicator.alpha = 0.0
+        animateActivityIndicator(animated: false)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tap(gesture:)))
         view.addGestureRecognizer(tapGesture)
     }
@@ -35,17 +35,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         if usernameTextField.text!.isEmpty || passwordTextField.text!.isEmpty {
             displayAlert(errorString: "Username or password empty.")
         } else {
-            activityIndicator.alpha = 1.0
-            activityIndicator.startAnimating()
+            animateActivityIndicator(animated: true)
             UdacityClient.sharedInstance().authenticateWithViewController(username: usernameTextField.text!, password: passwordTextField.text!) { (success, errorString) in
                 performUIUpdatesOnMain {
                     if success {
-                        self.activityIndicator.isHidden = true
-                        self.activityIndicator.stopAnimating()
+                        self.animateActivityIndicator(animated: false)
                         self.completeLogin()
                         self.usernameTextField.text = ""
                         self.passwordTextField.text = ""
                     } else {
+                        self.animateActivityIndicator(animated: false)
                         self.displayAlert(errorString: errorString)
                     }
                 }
@@ -84,5 +83,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return true;
     }
     
+    func animateActivityIndicator(animated: Bool) {
+        if animated {
+            activityIndicator.alpha = 1.0
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.alpha = 0.0
+            activityIndicator.stopAnimating()
+        }
+    }
 }
 
