@@ -11,17 +11,38 @@ import UIKit
 import MapKit
 
 class PostingConfirmViewController: UIViewController {
-
-    var locationName = ""
-    var url = ""
-    var location = CLLocation(latitude: 0, longitude: 0)
+    
+    //    var locationName = ""
+    //    var url = ""
+    //    var location = CLLocation(latitude: 0, longitude: 0)
     
     @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        }
-
+        print(MyLocation.address)
+        print(MyLocation.url)
+        print(MyLocation.latitude)
+        print(MyLocation.longitude)
+        
+        // The lat and long are used to create a CLLocationCoordinates2D instance.
+        let coordinate = CLLocationCoordinate2D(latitude: MyLocation.latitude, longitude: MyLocation.longitude)
+        
+        let first = "Kenneth"
+        let last = "Chen"
+        
+        // Here we create the annotation and set its coordiate, title, and subtitle properties
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        mapView.centerCoordinate = coordinate
+        
+        annotation.title = "\(first) \(last)"
+        annotation.subtitle = MyLocation.url
+        
+        // When the array is complete, we add the annotations to the map.
+        self.mapView.addAnnotation(annotation)
+    }
+    
     @IBAction func finishButtonPressed(_ sender: Any) {
         // Call postStudentLocation
     }

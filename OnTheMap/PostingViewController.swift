@@ -33,28 +33,32 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         } else if urlTextField.text!.prefix(8) != "https://" {
             displayAlert(errorString: "Please enter url, starting with 'https://'")
         } else {
-
+            animateActivityIndicator(animated: true)
+            MyLocation.address = self.locationTextField.text!
+            MyLocation.url = self.urlTextField.text!
             getMyLocation(completionHandler: { (success, errorString) in
                 if (success) {
                     print("Successfully set your location data")
-                    
+
                     let controller = self.storyboard!.instantiateViewController(withIdentifier: "PostingConfirmViewController") as! PostingConfirmViewController
                     self.navigationController!.pushViewController(controller, animated: true)
                     
-                    self.activityIndicator.stopAnimating()
-                    self.activityIndicator.alpha = 0.0
+                    self.animateActivityIndicator(animated: false)
                 } else {
                     
                     performUIUpdatesOnMain {
 //                        self.setUIEnabled(false)
                         self.displayAlert(errorString: errorString!)
 //                        self.setUIEnabled(true)
-                        self.activityIndicator.stopAnimating()
-                        self.activityIndicator.alpha = 0.0
+                        self.animateActivityIndicator(animated: false)
                     }
                 }
             })
         }
+    }
+    
+    @IBAction func urlTextFieldBeginEditing(_ sender: Any) {
+            self.urlTextField.text = "https://"
     }
     
     func getMyLocation(completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
@@ -84,7 +88,9 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
                     completionHandler(false, error?.localizedDescription)
                     return
                 }
-                
+
+                MyLocation.latitude = latitude
+                MyLocation.longitude = longitude
                 completionHandler(true, nil)
             }
         }
