@@ -55,6 +55,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private func completeLogin() {
         let controller = storyboard!.instantiateViewController(withIdentifier: "NavigationController") as! UINavigationController
         present(controller, animated: true, completion: nil)
+        UdacityClient.sharedInstance().getUserData() {(result, error) in
+            if let error = error {
+                print("Could not get user data: \(error)")
+            } else if let result = result {
+                print("My Udacity user info is successfully loaded into MyLocation.")
+            }
+            
+        }
     }
     
     // Display alert with error message
@@ -65,7 +73,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             controller.message = errorString
         }
         
-        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in self.dismiss(animated: true, completion: nil)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
         }
         controller.addAction(okAction)
         self.present(controller, animated: true, completion: nil)

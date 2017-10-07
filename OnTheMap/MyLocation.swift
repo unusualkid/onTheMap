@@ -9,8 +9,16 @@
 import Foundation
 
 struct MyLocation {
-    static var address = ""
-    static var url = ""
+    static var mapString = ""
+    static var mediaUrl = ""
     static var latitude = 0.0
     static var longitude = 0.0
+    
+    static var objectId = ""
+//    static var uniqueKey = ""
+    static var firstName = ""
+    static var lastName = ""
+    
+    static var createdAt = ""
+//    static var updatedAt = ""
 }

@@ -34,22 +34,16 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
             displayAlert(errorString: "Please enter url, starting with 'https://'")
         } else {
             animateActivityIndicator(animated: true)
-            MyLocation.address = self.locationTextField.text!
-            MyLocation.url = self.urlTextField.text!
+            MyLocation.mapString = self.locationTextField.text!
+            MyLocation.mediaUrl = self.urlTextField.text!
             getMyLocation(completionHandler: { (success, errorString) in
-                if (success) {
-                    print("Successfully set your location data")
-
-                    let controller = self.storyboard!.instantiateViewController(withIdentifier: "PostingConfirmViewController") as! PostingConfirmViewController
-                    self.navigationController!.pushViewController(controller, animated: true)
-                    
-                    self.animateActivityIndicator(animated: false)
-                } else {
-                    
-                    performUIUpdatesOnMain {
-//                        self.setUIEnabled(false)
-                        self.displayAlert(errorString: errorString!)
-//                        self.setUIEnabled(true)
+                performUIUpdatesOnMain {
+                    if (success) {
+                        print("Successfully set your location data")
+                        let controller = self.storyboard!.instantiateViewController(withIdentifier: "PostingConfirmViewController") as! PostingConfirmViewController
+                        self.navigationController!.pushViewController(controller, animated: true)
+                        self.animateActivityIndicator(animated: false)
+                    } else {
                         self.animateActivityIndicator(animated: false)
                     }
                 }
@@ -58,7 +52,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func urlTextFieldBeginEditing(_ sender: Any) {
-            self.urlTextField.text = "https://"
+        self.urlTextField.text = "https://"
     }
     
     func getMyLocation(completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
@@ -66,29 +60,29 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         geocoder.geocodeAddressString(locationTextField.text!) { (placemark, error) in
             performUIUpdatesOnMain {
                 if let error = error {
-                    print("Could not geocode the entered location: \(error)")
+                    self.displayAlert(errorString: "Could not geocode the entered location: \(error)")
                     completionHandler(false, error.localizedDescription)
                     return
                 }
                 
                 guard let placemark = placemark else {
-                    print("No placemarks found")
+                    self.displayAlert(errorString: "No placemarks found")
                     completionHandler(false, error?.localizedDescription)
                     return
                 }
                 
                 guard let latitude = placemark[0].location?.coordinate.latitude else {
-                    print("This latitude placemark is: \(placemark)")
+                    self.displayAlert(errorString: "This latitude placemark is: \(placemark)")
                     completionHandler(false, error?.localizedDescription)
                     return
                 }
                 
                 guard let longitude = placemark[0].location?.coordinate.longitude else {
-                    print("This longitude placemark is: \(placemark)")
+                    self.displayAlert(errorString: "This longitude placemark is: \(placemark)")
                     completionHandler(false, error?.localizedDescription)
                     return
                 }
-
+                
                 MyLocation.latitude = latitude
                 MyLocation.longitude = longitude
                 completionHandler(true, nil)
@@ -108,13 +102,12 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
             controller.message = errorString
         }
         
-        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in self.dismiss(animated: true, completion: nil)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
         }
         controller.addAction(okAction)
         self.present(controller, animated: true, completion: nil)
     }
     
-    // MARK: - Keyboard-related methods
     // Dismiss the keyboard when tapping outside the top and bottom textfields
     @objc func tap(gesture: UITapGestureRecognizer) {
         locationTextField.resignFirstResponder()
@@ -126,18 +119,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         return true;
     }
     
-//    func setUIEnabled(_ enabled: Bool) {
-//        locationTextField.isEnabled = enabled
-//        urlTextField.isEnabled = enabled
-//        findLocationButton.isEnabled = enabled
-//
-//        if enabled {
-//            findLocationButton.alpha = 1.0
-//        } else {
-//            findLocationButton.alpha = 0.5
-//        }
-//    }
-    
+    // Animate the activity indicator when loading in background
     func animateActivityIndicator(animated: Bool) {
         if animated {
             activityIndicator.alpha = 1.0

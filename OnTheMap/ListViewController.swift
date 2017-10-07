@@ -52,17 +52,5 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         return cell
     }
-    
-    private func displayAlert(errorString: String?) {
-        let controller = UIAlertController()
-        
-        if let errorString = errorString {
-            controller.message = errorString
-        }
-        
-        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in self.dismiss(animated: true, completion: nil)
-        }
-        controller.addAction(okAction)
-        self.present(controller, animated: true, completion: nil)
-    }
+
 }

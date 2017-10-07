@@ -132,6 +132,20 @@ class ParseClient : NSObject {
             
             print(parsedResult)
             
+            /* GUARD: Is the "objectId" key in our result? */
+            guard let createdAt = parsedResult[ParseClient.ResponseKeys.CreatedAt] as? String else {
+                sendError("Cannot find key '\(ParseClient.ResponseKeys.CreatedAt)' in \(parsedResult)")
+                return
+            }
+            /* GUARD: Is the "objectId" key in our result? */
+            guard let objectId = parsedResult[ParseClient.ResponseKeys.ObjectId] as? String else {
+                sendError("Cannot find key '\(ParseClient.ResponseKeys.ObjectId)' in \(parsedResult)")
+                return
+            }
+            
+            MyLocation.createdAt = createdAt
+            MyLocation.objectId = objectId
+            
             completionHandlerForPostStudentLocations(true, nil)
         }
         task.resume()

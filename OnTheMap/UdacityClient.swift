@@ -25,7 +25,7 @@ class UdacityClient: NSObject {
         super.init()
     }
     
-    func getUserData(completionHandlerForGetUserData: @escaping (_ result: Data?, _ error: String?) -> Void) -> URLSessionDataTask {
+    func getUserData(completionHandlerForGetUserData: @escaping (_ result: [String:AnyObject]?, _ error: String?) -> Void) -> URLSessionDataTask {
         /* 1. Set the parameters */
         // There are none...
         var parameters = [String : Any]()
@@ -71,7 +71,27 @@ class UdacityClient: NSObject {
                 sendError("Could not parse the data as JSON: '\(data)'")
                 return
             }
-            completionHandlerForGetUserData(data, nil)
+            
+            /* GUARD: Is the "user" key in our result? */
+            guard let userDictionary = parsedResult[UdacityClient.ResponseKeys.User] as? [String:AnyObject] else {
+                sendError("Cannot find key '\(UdacityClient.ResponseKeys.User)' in \(parsedResult)")
+                return
+            }
+            
+            /* GUARD: Is "last_name" key in the userDictionary? */
+            guard let lastName = userDictionary[UdacityClient.ResponseKeys.lastName] as? String else {
+                sendError("Cannot find key '\(UdacityClient.ResponseKeys.lastName)' in \(userDictionary)")
+                return
+            }
+            
+            /* GUARD: Is "first_name" key in the userDictionary? */
+            guard let firstName = userDictionary[UdacityClient.ResponseKeys.firstName] as? String else {
+                sendError("Cannot find key '\(UdacityClient.ResponseKeys.firstName)' in \(userDictionary)")
+                return
+            }
+            MyLocation.firstName = firstName
+            MyLocation.lastName = lastName
+            completionHandlerForGetUserData(parsedResult, nil)
         }
         task.resume()
         
@@ -240,20 +260,19 @@ class UdacityClient: NSObject {
     
     // create a URL from parameters
     func udacityURLFromParameters(_ parameters: [String:AnyObject], withPathExtension: String? = nil, method: String) -> URL {
-    
-    var components = URLComponents()
-    components.scheme = UdacityClient.Constants.ApiScheme
-    components.host = UdacityClient.Constants.ApiHost
-    components.path = method == "session" ? UdacityClient.Constants.ApiPath + UdacityClient.Constants.SessionPath : UdacityClient.Constants.ApiPath + UdacityClient.Constants.UserPath + "/" + self.accountKey!
-    components.path += (withPathExtension ?? "")
-    components.queryItems = [URLQueryItem]()
-    
-    for (key, value) in parameters {
-    let queryItem = URLQueryItem(name: key, value: "\(value)")
-    components.queryItems!.append(queryItem)
-    }
-    print(components.url!)
-    return components.url!
+        
+        var components = URLComponents()
+        components.scheme = UdacityClient.Constants.ApiScheme
+        components.host = UdacityClient.Constants.ApiHost
+        components.path = method == "session" ? UdacityClient.Constants.ApiPath + UdacityClient.Constants.SessionPath : UdacityClient.Constants.ApiPath + UdacityClient.Constants.UserPath + "/" + self.accountKey!
+        components.path += (withPathExtension ?? "")
+        components.queryItems = [URLQueryItem]()
+        
+        for (key, value) in parameters {
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
+            components.queryItems!.append(queryItem)
+        }
+        return components.url!
     }
     
     // MARK: Shared Instance

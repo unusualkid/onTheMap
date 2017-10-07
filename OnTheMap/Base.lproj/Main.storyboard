@@ -40,7 +40,7 @@
                                                 <rect key="frame" x="20" y="0.0" width="263" height="30"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" keyboardType="emailAddress" textContentType="username"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" smartInsertDeleteType="no" textContentType="email"/>
                                                 <connections>
                                                     <outlet property="delegate" destination="BYZ-38-t0r" id="qDm-sn-aRW"/>
                                                 </connections>
@@ -127,7 +127,7 @@
         <!--List View Controller-->
         <scene sceneID="JRF-iE-rcx">
             <objects>
-                <viewController id="p8S-me-QNp" customClass="ListViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ListViewController" id="p8S-me-QNp" customClass="ListViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="U8a-ri-4oH"/>
                         <viewControllerLayoutGuide type="bottom" id="B33-TZ-Uuj"/>
@@ -207,7 +207,7 @@
         <!--Map View Controller-->
         <scene sceneID="y1g-Jb-tff">
             <objects>
-                <viewController id="Jrw-Ee-MxS" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapViewController" id="Jrw-Ee-MxS" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gfR-lY-Okk"/>
                         <viewControllerLayoutGuide type="bottom" id="xWv-gq-k8z"/>
@@ -340,6 +340,9 @@
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Cfy-K4-YJW">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <connections>
+                                    <outlet property="delegate" destination="i7v-tJ-Gdd" id="sG1-VE-NJT"/>
+                                </connections>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WJ4-Bw-FLt">
                                 <rect key="frame" x="26" y="617" width="323" height="30"/>

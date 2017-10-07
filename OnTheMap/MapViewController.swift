@@ -25,11 +25,11 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         
         // create and set the logout button
-        parent!.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
+        parent?.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
         
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshButtonPressed))
         let addPinButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addPinButtonPressed))
-        parent!.navigationItem.rightBarButtonItems = [addPinButton, refreshButton]
+        parent?.navigationItem.rightBarButtonItems = [addPinButton, refreshButton]
         
         ParseClient.sharedInstance().getStudentLocations() { (studentLocations, error) in
             if let studentLocations = studentLocations {
@@ -70,12 +70,6 @@ class MapViewController: UIViewController {
         }
     }
     
-    @IBAction func getUserData(_ sender: Any) {
-        UdacityClient.sharedInstance().getUserData() {(data, error) in
-            print("finished")
-        }
-    }
-    
     @objc func logout() {
         UdacityClient.sharedInstance().logoutWithViewController() { (success, error) in
             performUIUpdatesOnMain {
@@ -106,7 +100,7 @@ class MapViewController: UIViewController {
             controller.message = errorString
         }
         
-        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in self.dismiss(animated: true, completion: nil)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
         }
         controller.addAction(okAction)
         self.present(controller, animated: true, completion: nil)

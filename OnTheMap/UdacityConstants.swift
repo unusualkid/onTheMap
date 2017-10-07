@@ -34,5 +34,8 @@ extension UdacityClient {
         static let Session = "session"
         static let Id = "id"
         static let Expiration = "expiration"
+        static let User = "user"
+        static let lastName = "last_name"
+        static let firstName = "first_name"
     }
 }
