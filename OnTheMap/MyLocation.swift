@@ -15,10 +15,10 @@ struct MyLocation {
     static var longitude = 0.0
     
     static var objectId = ""
-//    static var uniqueKey = ""
+    static var uniqueKey = ""
     static var firstName = ""
     static var lastName = ""
     
     static var createdAt = ""
-//    static var updatedAt = ""
+    static var updatedAt = ""
 }

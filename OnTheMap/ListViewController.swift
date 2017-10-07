@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -33,6 +33,20 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    private func displayAlert(errorString: String?) {
+        let controller = UIAlertController()
+        
+        if let errorString = errorString {
+            controller.message = errorString
+        }
+        
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
+        }
+        controller.addAction(okAction)
+        self.present(controller, animated: true, completion: nil)
+    }
+}
+extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return locations.count
     }
@@ -52,5 +66,15 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         return cell
     }
-
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let location = locations[(indexPath as NSIndexPath).row]
+        if location.mediaURL?.prefix(8) == "https://" {
+            UIApplication.shared.open(URL(string: location.mediaURL!)!, options: [:], completionHandler: nil)
+        } else {
+            displayAlert(errorString: "Cannot launch URLs that don't start with 'https://'.")
+        }
+    }
 }
+
+

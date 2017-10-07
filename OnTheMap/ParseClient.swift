@@ -22,11 +22,10 @@ class ParseClient : NSObject {
     func getStudentLocations(completionHandlerForGetStudentLocations: @escaping (_ result: [StudentLocation]?, _ error: String?) -> Void) -> URLSessionDataTask {
         /* 1. Set the parameters */
         // There are none...
-        var parameters = ["limit" : 10]
+        var parameters = ["limit" : 100]
         
         /* 2/3. Build the URL, Configure the request */
         var url = parseURLFromParameters(parameters as [String:AnyObject])
-        var method = "getStudentLocations"
         var request = createRequest(httpMethod: ParseClient.HTTPMethods.Get, url: url)
         
         /* 4. Make the request */
@@ -64,8 +63,6 @@ class ParseClient : NSObject {
                 return
             }
             
-            print(parsedResult)
-            
             /* GUARD: Is the "result" key in our result? */
             guard let results = parsedResult[ParseClient.ResponseKeys.Results] as? [[String:AnyObject]] else {
                 sendError("Cannot find key '\(ParseClient.ResponseKeys.Results)' in \(parsedResult)")
@@ -85,22 +82,21 @@ class ParseClient : NSObject {
         return task
     }
     
-    func postStudentLocation(completionHandlerForPostStudentLocations: @escaping (_ success: Bool, _ error: String?) -> Void) -> URLSessionDataTask {
+    func getOneStudentLocation(completionHandlerForGetOneStudentLocation: @escaping (_ result: StudentLocation?, _ error: String?) -> Void) -> URLSessionDataTask {
         /* 1. Set the parameters */
         // There are none...
-        var parameters = [String : Any]()
+        var parameters = ["where" : [String: AnyObject]()]
         
         /* 2/3. Build the URL, Configure the request */
         var url = parseURLFromParameters(parameters as [String:AnyObject])
-        var method = "postStudentLocations"
-        var request = createRequest(httpMethod: ParseClient.HTTPMethods.Post, url: url)
+        var request = createRequest(httpMethod: ParseClient.HTTPMethods.Get, url: url)
         
         /* 4. Make the request */
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             func sendError(_ error: String) {
                 print(error)
                 print("URL at time of error: \(request.url)")
-                completionHandlerForPostStudentLocations(false, error)
+                completionHandlerForGetOneStudentLocation(nil, error)
             }
             
             /* GUARD: Was there an error? */
@@ -130,7 +126,64 @@ class ParseClient : NSObject {
                 return
             }
             
-            print(parsedResult)
+            /* GUARD: Is the "result" key in our result? */
+            guard let results = parsedResult[ParseClient.ResponseKeys.Results] as? [[String:AnyObject]] else {
+                sendError("Cannot find key '\(ParseClient.ResponseKeys.Results)' in \(parsedResult)")
+                return
+            }
+            
+            let studentLocation = StudentLocation(dictionary: results[0])
+            
+            completionHandlerForGetOneStudentLocation(studentLocation, nil)
+        }
+        task.resume()
+        
+        return task
+    }
+    
+    func postStudentLocation(completionHandlerForPostStudentLocation: @escaping (_ success: Bool, _ error: String?) -> Void) -> URLSessionDataTask {
+        /* 1. Set the parameters */
+        // There are none...
+        var parameters = [String : Any]()
+        
+        /* 2/3. Build the URL, Configure the request */
+        var url = parseURLFromParameters(parameters as [String:AnyObject])
+        var request = createRequest(httpMethod: ParseClient.HTTPMethods.Post, url: url)
+        
+        /* 4. Make the request */
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
+            func sendError(_ error: String) {
+                print(error)
+                print("URL at time of error: \(request.url)")
+                completionHandlerForPostStudentLocation(false, error)
+            }
+            
+            /* GUARD: Was there an error? */
+            guard (error == nil) else {
+                sendError("There was an error with your request: \(error!)")
+                return
+            }
+            
+            /* GUARD: Did we get a successful 2XX response? */
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                sendError("Your request returned a status code other than 2xx!")
+                return
+            }
+            
+            /* GUARD: Was there any data returned? */
+            guard let data = data else {
+                sendError("No data was returned by the request!")
+                return
+            }
+            
+            /* 5/6. Parse the data and use the data (happens in completion handler) */
+            let parsedResult: [String:AnyObject]!
+            do {
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
+            } catch {
+                sendError("Could not parse the data as JSON: '\(data)'")
+                return
+            }
             
             /* GUARD: Is the "objectId" key in our result? */
             guard let createdAt = parsedResult[ParseClient.ResponseKeys.CreatedAt] as? String else {
@@ -146,13 +199,72 @@ class ParseClient : NSObject {
             MyLocation.createdAt = createdAt
             MyLocation.objectId = objectId
             
-            completionHandlerForPostStudentLocations(true, nil)
+            completionHandlerForPostStudentLocation(true, nil)
         }
         task.resume()
         
         return task
     }
     
+    func putStudentLocation(completionHandlerForPutStudentLocation: @escaping (_ success: Bool, _ error: String?) -> Void) -> URLSessionDataTask {
+        /* 1. Set the parameters */
+        // There are none...
+        var parameters = ["objectId" : MyLocation.objectId]
+        
+        /* 2/3. Build the URL, Configure the request */
+        var url = parseURLFromParameters(parameters as [String:AnyObject])
+        var method = "putStudentLocation"
+        var request = createRequest(httpMethod: ParseClient.HTTPMethods.Put, url: url)
+        
+        /* 4. Make the request */
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
+            func sendError(_ error: String) {
+                print(error)
+                print("URL at time of error: \(request.url)")
+                completionHandlerForPutStudentLocation(false, error)
+            }
+            
+            /* GUARD: Was there an error? */
+            guard (error == nil) else {
+                sendError("There was an error with your request: \(error!)")
+                return
+            }
+            
+            /* GUARD: Did we get a successful 2XX response? */
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                sendError("Your request returned a status code other than 2xx!")
+                return
+            }
+            
+            /* GUARD: Was there any data returned? */
+            guard let data = data else {
+                sendError("No data was returned by the request!")
+                return
+            }
+            
+            /* 5/6. Parse the data and use the data (happens in completion handler) */
+            let parsedResult: [String:AnyObject]!
+            do {
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
+            } catch {
+                sendError("Could not parse the data as JSON: '\(data)'")
+                return
+            }
+            
+            /* GUARD: Is the "objectId" key in our result? */
+            guard let updatedAt = parsedResult[ParseClient.ResponseKeys.UpdatedAt] as? String else {
+                sendError("Cannot find key '\(ParseClient.ResponseKeys.UpdatedAt)' in \(parsedResult)")
+                return
+            }
+            
+            MyLocation.updatedAt = updatedAt
+            
+            completionHandlerForPutStudentLocation(true, nil)
+        }
+        task.resume()
+        
+        return task
+    }
     
     // load JSON data returned from Parse API into the local dictionary of student locations
     static func studentLocationsFromResults(_ results: [[String:AnyObject]]) -> [StudentLocation] {
