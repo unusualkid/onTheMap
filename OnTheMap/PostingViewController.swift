@@ -39,7 +39,6 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
             getMyLocation(completionHandler: { (success, errorString) in
                 performUIUpdatesOnMain {
                     if (success) {
-                        print("Successfully set your location data")
                         let controller = self.storyboard!.instantiateViewController(withIdentifier: "PostingConfirmViewController") as! PostingConfirmViewController
                         self.navigationController!.pushViewController(controller, animated: true)
                         self.animateActivityIndicator(animated: false)

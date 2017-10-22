@@ -20,7 +20,7 @@ class ListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        locations = []
         ParseClient.sharedInstance().getStudentLocations { (locations, error) in
             if let locations = locations {
                 self.locations = locations
@@ -58,21 +58,17 @@ extension ListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.imageView?.contentMode = .scaleAspectFit
         cell.textLabel?.text = location.firstName + " " + location.lastName
         if let detailTextLabel = cell.detailTextLabel {
-            if let mediaURL = location.mediaURL {
-                detailTextLabel.text = mediaURL
-            } else {
-                detailTextLabel.text = ""
-            }
+            detailTextLabel.text = location.mediaURL
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let location = locations[(indexPath as NSIndexPath).row]
-        if location.mediaURL?.prefix(8) == "https://" {
-            UIApplication.shared.open(URL(string: location.mediaURL!)!, options: [:], completionHandler: nil)
+        if location.mediaURL.prefix(8) == "https://" {
+            UIApplication.shared.open(URL(string: location.mediaURL)!, options: [:], completionHandler: nil)
         } else {
-            displayAlert(errorString: "Cannot launch URLs that don't start with 'https://'.")
+            displayAlert(errorString: "Cannot launch URLs that don't start with 'https://'1.")
         }
     }
 }

@@ -25,6 +25,93 @@ class UdacityClient: NSObject {
         super.init()
     }
     
+    func authenticateWithViewController(username: String, password: String, completionHandlerForAuth: @escaping (_ success: Bool, _ error: String?) -> Void) -> URLSessionDataTask {
+        
+        /* 1. Set the parameters */
+        // There are none...
+        var parameters = [String : Any]()
+        
+        /* 2/3. Build the URL, Configure the request */
+        var request = URLRequest(url: udacityURLFromParameters(parameters as [String:AnyObject], method: "session"))
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = "{\"udacity\": {\"username\": \"\(username)\", \"password\": \"\(password)\"}}".data(using: String.Encoding.utf8)
+        
+        /* 4. Make the request */
+        let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
+            
+            func sendError(_ error: String) {
+                print(error)
+                print("URL at time of error: \(request.url)")
+                completionHandlerForAuth(false, error)
+            }
+            
+            /* GUARD: Was there an error? */
+            guard (error == nil) else {
+                sendError("There was an error with your request: \(error!)")
+                return
+            }
+            
+            /* GUARD: Was there any data returned? */
+            guard let data = data else {
+                sendError("No data was returned by the request!")
+                return
+            }
+            
+            /* 5/6. Parse the data and use the data (happens in completion handler) */
+            let range = Range(5..<data.count)
+            let newData = data.subdata(in: range) /* subset response data! */
+            
+            let parsedResult: [String:AnyObject]!
+            do {
+                parsedResult = try JSONSerialization.jsonObject(with: newData, options: .allowFragments) as! [String:AnyObject]
+            } catch {
+                sendError("Could not parse the data as JSON: '\(data)'")
+                return
+            }
+            
+            /* GUARD: Is the "session" key in our result? */
+            guard let sessionDictionary = parsedResult[UdacityClient.ResponseKeys.Session] as? [String:AnyObject] else {
+                print("Cannot find key '\(UdacityClient.ResponseKeys.Session)' in \(parsedResult)")
+                sendError("Invalid credentials")
+                return
+            }
+            
+            /* GUARD: Is "id" key in the sessionDictionary? */
+            guard let id = sessionDictionary[UdacityClient.ResponseKeys.Id] as? String else {
+                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Id)' in \(sessionDictionary)")
+                return
+            }
+            
+            /* GUARD: Is the "account" key in our result? */
+            guard let accountDictionary = parsedResult[UdacityClient.ResponseKeys.Account] as? [String:AnyObject] else {
+                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Account)' in \(parsedResult)")
+                return
+            }
+            
+            /* GUARD: Is "key" key in the accountDictionary? */
+            guard let accountKey = accountDictionary[UdacityClient.ResponseKeys.Key] as? String else {
+                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Key)' in \(accountDictionary)")
+                return
+            }
+            
+            self.sessionID = id
+            self.accountKey = accountKey
+            MyLocation.uniqueKey = accountKey
+            print("parsedResult: ")
+            print(parsedResult)
+            print("sessionID: " + self.sessionID!)
+            print("accountKey: " + self.accountKey!)
+            completionHandlerForAuth(true, nil)
+        }
+        
+        /* 7. Start the request */
+        task.resume()
+        
+        return task
+    }
+    
     func getUserData(completionHandlerForGetUserData: @escaping (_ result: [String:AnyObject]?, _ error: String?) -> Void) -> URLSessionDataTask {
         /* 1. Set the parameters */
         // There are none...
@@ -62,7 +149,6 @@ class UdacityClient: NSObject {
             /* 5/6. Parse the data and use the data (happens in completion handler) */
             let range = Range(5..<data.count)
             let newData = data.subdata(in: range) /* subset response data! */
-            print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
             
             let parsedResult: [String:AnyObject]!
             do {
@@ -98,97 +184,6 @@ class UdacityClient: NSObject {
         return task
     }
     
-    
-    func authenticateWithViewController(username: String, password: String, completionHandlerForAuth: @escaping (_ success: Bool, _ error: String?) -> Void) -> URLSessionDataTask {
-        
-        /* 1. Set the parameters */
-        // There are none...
-        var parameters = [String : Any]()
-        
-        /* 2/3. Build the URL, Configure the request */
-        var request = URLRequest(url: udacityURLFromParameters(parameters as [String:AnyObject], method: "session"))
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"udacity\": {\"username\": \"\(username)\", \"password\": \"\(password)\"}}".data(using: String.Encoding.utf8)
-        
-        /* 4. Make the request */
-        let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
-            
-            func sendError(_ error: String) {
-                print(error)
-                print("URL at time of error: \(request.url)")
-                completionHandlerForAuth(false, error)
-            }
-            
-            /* GUARD: Was there an error? */
-            guard (error == nil) else {
-                sendError("There was an error with your request: \(error!)")
-                return
-            }
-            
-            /* GUARD: Did we get a successful 2XX response? */
-            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                sendError("Your request returned a status code other than 2xx!")
-                return
-            }
-            
-            /* GUARD: Was there any data returned? */
-            guard let data = data else {
-                sendError("No data was returned by the request!")
-                return
-            }
-            
-            /* 5/6. Parse the data and use the data (happens in completion handler) */
-            let range = Range(5..<data.count)
-            let newData = data.subdata(in: range) /* subset response data! */
-            
-            let parsedResult: [String:AnyObject]!
-            do {
-                parsedResult = try JSONSerialization.jsonObject(with: newData, options: .allowFragments) as! [String:AnyObject]
-            } catch {
-                sendError("Could not parse the data as JSON: '\(data)'")
-                return
-            }
-            
-            /* GUARD: Is the "session" key in our result? */
-            guard let sessionDictionary = parsedResult[UdacityClient.ResponseKeys.Session] as? [String:AnyObject] else {
-                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Session)' in \(parsedResult)")
-                return
-            }
-            
-            /* GUARD: Is "id" key in the sessionDictionary? */
-            guard let id = sessionDictionary[UdacityClient.ResponseKeys.Id] as? String else {
-                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Id)' in \(sessionDictionary)")
-                return
-            }
-            
-            /* GUARD: Is the "account" key in our result? */
-            guard let accountDictionary = parsedResult[UdacityClient.ResponseKeys.Account] as? [String:AnyObject] else {
-                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Account)' in \(parsedResult)")
-                return
-            }
-            
-            /* GUARD: Is "key" key in the accountDictionary? */
-            guard let accountKey = accountDictionary[UdacityClient.ResponseKeys.Key] as? String else {
-                sendError("Cannot find key '\(UdacityClient.ResponseKeys.Key)' in \(accountDictionary)")
-                return
-            }
-            
-            self.sessionID = id
-            self.accountKey = accountKey
-            print("parsedResult: ")
-            print(parsedResult)
-            print("sessionID: " + self.sessionID!)
-            print("accountKey: " + self.accountKey!)
-            completionHandlerForAuth(true, nil)
-        }
-        
-        /* 7. Start the request */
-        task.resume()
-        
-        return task
-    }
     
     func logoutWithViewController(completionHandlerForLogout: @escaping (_ success: Bool, _ error: String?) -> Void) -> URLSessionDataTask {
         
@@ -257,10 +252,8 @@ class UdacityClient: NSObject {
         return task
     }
     
-    
     // create a URL from parameters
     func udacityURLFromParameters(_ parameters: [String:AnyObject], withPathExtension: String? = nil, method: String) -> URL {
-        
         var components = URLComponents()
         components.scheme = UdacityClient.Constants.ApiScheme
         components.host = UdacityClient.Constants.ApiHost

@@ -20,12 +20,6 @@ class PostingConfirmViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(MyLocation.firstName)
-        print(MyLocation.lastName)
-        print(MyLocation.mapString)
-        print(MyLocation.mediaUrl)
-        print(MyLocation.latitude)
-        print(MyLocation.longitude)
         
         // The lat and long are used to create a CLLocationCoordinates2D instance.
         let coordinate = CLLocationCoordinate2D(latitude: MyLocation.latitude, longitude: MyLocation.longitude)
@@ -42,15 +36,24 @@ class PostingConfirmViewController: UIViewController {
     }
     
     @IBAction func finishButtonPressed(_ sender: Any) {
-        // Call postStudentLocation
-        ParseClient.sharedInstance().postStudentLocation { (success, errorString) in
-            performUIUpdatesOnMain {
-                if success {
-                    print("successfully posted myLocation to parse")
-//                    let controller = self.storyboard?.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-                    self.navigationController?.popToRootViewController(animated: true)
-                } else {
-                    self.displayAlert(errorString: errorString)
+        if MyLocation.createdAt != "" {
+            ParseClient.sharedInstance().putStudentLocation { (success, error) in
+                performUIUpdatesOnMain {
+                    if success {
+                        self.navigationController?.popToRootViewController(animated: true)
+                    } else {
+                        self.displayAlert(errorString: error)
+                    }
+                }
+            }
+        } else {
+            ParseClient.sharedInstance().postStudentLocation { (success, error) in
+                performUIUpdatesOnMain {
+                    if success {
+                        self.navigationController?.popToRootViewController(animated: true)
+                    } else {
+                        self.displayAlert(errorString: error)
+                    }
                 }
             }
         }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4Mt-po-r94">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -89,6 +89,9 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dTY-V4-TUI">
                                                 <rect key="frame" x="181" y="0.0" width="55" height="30"/>
                                                 <state key="normal" title="Sign Up"/>
+                                                <connections>
+                                                    <action selector="signupButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5vA-hQ-iVL"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -124,7 +127,7 @@
             </objects>
             <point key="canvasLocation" x="-793" y="103"/>
         </scene>
-        <!--List View Controller-->
+        <!--List View-->
         <scene sceneID="JRF-iE-rcx">
             <objects>
                 <viewController storyboardIdentifier="ListViewController" id="p8S-me-QNp" customClass="ListViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
@@ -179,7 +182,7 @@
                             <constraint firstAttribute="trailing" secondItem="Kiq-6W-RFD" secondAttribute="trailing" id="ngO-Yq-VB4"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" image="icon_listview-deselected" selectedImage="icon_listview-selected" id="4my-0Q-Fia"/>
+                    <tabBarItem key="tabBarItem" title="List View" image="icon_listview-deselected" selectedImage="icon_listview-selected" id="4my-0Q-Fia"/>
                     <connections>
                         <outlet property="tableView" destination="Kiq-6W-RFD" id="Y4U-dR-7qI"/>
                     </connections>
@@ -204,7 +207,7 @@
             </objects>
             <point key="canvasLocation" x="78" y="103"/>
         </scene>
-        <!--Map View Controller-->
+        <!--Map View-->
         <scene sceneID="y1g-Jb-tff">
             <objects>
                 <viewController storyboardIdentifier="MapViewController" id="Jrw-Ee-MxS" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
@@ -231,7 +234,7 @@
                             <constraint firstItem="xWv-gq-k8z" firstAttribute="top" secondItem="VWQ-BS-4Qa" secondAttribute="bottom" id="q5L-Ul-SMg"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" image="icon_mapview-deselected" selectedImage="icon_mapview-selected" id="EKP-3W-iAG"/>
+                    <tabBarItem key="tabBarItem" title="Map View" image="icon_mapview-deselected" selectedImage="icon_mapview-selected" id="EKP-3W-iAG"/>
                     <connections>
                         <outlet property="mapView" destination="VWQ-BS-4Qa" id="nwa-pL-2ee"/>
                     </connections>
@@ -274,7 +277,7 @@
                                                 <rect key="frame" x="0.0" y="40" width="343" height="30"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" keyboardType="URL" smartInsertDeleteType="no" textContentType="url"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="URL" smartDashesType="no" smartInsertDeleteType="no" textContentType="url"/>
                                                 <connections>
                                                     <action selector="urlTextFieldBeginEditing:" destination="AnF-xi-4yy" eventType="editingDidBegin" id="LOt-Rc-0o3"/>
                                                     <outlet property="delegate" destination="AnF-xi-4yy" id="lXA-ua-90D"/>

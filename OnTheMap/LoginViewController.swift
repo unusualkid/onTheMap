@@ -36,7 +36,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             displayAlert(errorString: "Username or password empty.")
         } else {
             animateActivityIndicator(animated: true)
-            UdacityClient.sharedInstance().authenticateWithViewController(username: usernameTextField.text!, password: passwordTextField.text!) { (success, errorString) in
+            UdacityClient.sharedInstance().authenticateWithViewController(username: usernameTextField.text!, password: passwordTextField.text!) { (success, error) in
                 performUIUpdatesOnMain {
                     if success {
                         self.animateActivityIndicator(animated: false)
@@ -45,12 +45,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         self.passwordTextField.text = ""
                     } else {
                         self.animateActivityIndicator(animated: false)
-                        self.displayAlert(errorString: errorString)
+                        self.displayAlert(errorString: error)
                     }
                 }
             }
         }
     }
+    
+    @IBAction func signupButtonPressed(_ sender: Any) {
+        let app = UIApplication.shared
+        app.open(URL(string: "https://in.udacity.com/auth/")!, options: [:], completionHandler: nil)
+    }
+    
     
     private func completeLogin() {
         let controller = storyboard!.instantiateViewController(withIdentifier: "NavigationController") as! UINavigationController
@@ -61,7 +67,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             } else if let result = result {
                 print("My Udacity user info is successfully loaded into MyLocation.")
             }
-            
         }
     }
     

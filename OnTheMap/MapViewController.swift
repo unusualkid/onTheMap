@@ -25,55 +25,24 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         
         // create and set the logout button
-        parent?.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
+        parent?.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "LOGOUT", style: .plain, target: self, action: #selector(logout))
         
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshButtonPressed))
         let addPinButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addPinButtonPressed))
         parent?.navigationItem.rightBarButtonItems = [addPinButton, refreshButton]
-        
-        ParseClient.sharedInstance().getStudentLocations() { (studentLocations, error) in
-            if let studentLocations = studentLocations {
-                self.locations = studentLocations
-                
-                // The "locations" array is loaded with the sample data below. We are using the dictionaries
-                // to create map annotations. This would be more stylish if the dictionaries were being
-                // used to create custom structs. Perhaps StudentLocation structs.
-                
-                for location in self.locations {
-                    
-                    // Notice that the float values are being used to create CLLocationDegree values.
-                    // This is a version of the Double type.
-                    let lat = CLLocationDegrees(location.latitude! as Float)
-                    let long = CLLocationDegrees(location.longitude! as Float)
-                    
-                    // The lat and long are used to create a CLLocationCoordinates2D instance.
-                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                    
-                    let first = location.firstName
-                    let last = location.lastName
-                    let mediaURL = location.mediaURL
-                    
-                    // Here we create the annotation and set its coordiate, title, and subtitle properties
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = coordinate
-                    annotation.title = "\(first) \(last)"
-                    annotation.subtitle = mediaURL
-                    
-                    // Finally we place the annotation in an array of annotations.
-                    self.annotations.append(annotation)
-                }
-                // When the array is complete, we add the annotations to the map.
-                self.mapView.addAnnotations(self.annotations)
-            } else {
-                print(error)
-            }
-        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mapView.removeAnnotations(annotations)
+        locations = []
+        annotations = []
+        self.getStudentLocations()
     }
     
     @objc func logout() {
         UdacityClient.sharedInstance().logoutWithViewController() { (success, error) in
             performUIUpdatesOnMain {
-                print("success: " + String(success))
                 if success {
                     self.dismiss(animated: true, completion: nil)
                 }
@@ -85,12 +54,72 @@ class MapViewController: UIViewController {
     }
     
     @objc func refreshButtonPressed() {
-        print("refresh button pressed")
+        print("MapViewController - refreshButtonPressed()")
+        print("MyLocation.firstName: " + MyLocation.firstName)
+        print("MyLocation.lastName: " + MyLocation.lastName)
+        print("MyLocation.MyLocation.mapString: " + MyLocation.mapString)
+        print("MyLocation.mediaUrl: " + MyLocation.mediaUrl)
+        print("MyLocation.latitude: " + String(MyLocation.latitude))
+        print("MyLocation.longitude: " + String(MyLocation.longitude))
+        print("MyLocation.objectId: " + MyLocation.objectId)
+        print("MyLocation.uniqueKey: " + MyLocation.uniqueKey)
+        print("MyLocation.createdAt: " + MyLocation.createdAt)
+        print("MyLocation.updatedAt: " + MyLocation.updatedAt)
+        mapView.removeAnnotations(annotations)
+        locations = []
+        annotations = []
+        self.getStudentLocations()
     }
     
     @objc func addPinButtonPressed() {
-        let controller = storyboard!.instantiateViewController(withIdentifier: "PostingViewController") as! PostingViewController
-        navigationController!.pushViewController(controller, animated: true)
+        ParseClient.sharedInstance().getOneStudentLocation { (success, error) in
+            performUIUpdatesOnMain {
+                if success {
+                    self.displayAlertForOverwrite(errorString: "User \(MyLocation.firstName) \(MyLocation.lastName) has already posted a Student Location. Would you like to overwrite their location?")
+                } else {
+                    print("new user")
+                    let controller = self.storyboard!.instantiateViewController(withIdentifier: "PostingViewController") as! PostingViewController
+                    self.navigationController!.pushViewController(controller, animated: true)
+                }
+            }
+        }
+    }
+    
+    private func getStudentLocations() {
+        ParseClient.sharedInstance().getStudentLocations() { (studentLocations, error) in
+            performUIUpdatesOnMain {
+                if let studentLocations = studentLocations {
+                    self.locations = studentLocations
+                    for location in self.locations {
+                        
+                        // Notice that the float values are being used to create CLLocationDegree values.
+                        // This is a version of the Double type.
+                        let lat = CLLocationDegrees(location.latitude as Float)
+                        let long = CLLocationDegrees(location.longitude as Float)
+                        
+                        // The lat and long are used to create a CLLocationCoordinates2D instance.
+                        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                        
+                        let first = location.firstName
+                        let last = location.lastName
+                        let mediaURL = location.mediaURL
+                        
+                        // Here we create the annotation and set its coordiate, title, and subtitle properties
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate = coordinate
+                        annotation.title = "\(first) \(last)"
+                        annotation.subtitle = mediaURL
+                        
+                        // Finally we place the annotation in an array of annotations.
+                        self.annotations.append(annotation)
+                    }
+                    // When the array is complete, we add the annotations to the map.
+                    self.mapView.addAnnotations(self.annotations)
+                } else {
+                    print(error)
+                }
+            }
+        }
     }
     
     private func displayAlert(errorString: String?) {
@@ -103,6 +132,28 @@ class MapViewController: UIViewController {
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
         }
         controller.addAction(okAction)
+        self.present(controller, animated: true, completion: nil)
+    }
+    
+    private func displayAlertForOverwrite(errorString: String?) {
+        let controller = UIAlertController()
+        
+        if let errorString = errorString {
+            controller.message = errorString
+        }
+        
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in
+            controller.dismiss(animated: true, completion: nil)
+            let viewController = self.storyboard!.instantiateViewController(withIdentifier: "PostingViewController") as! PostingViewController
+            self.navigationController!.pushViewController(viewController, animated: true)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default) { action in
+            controller.dismiss(animated: true, completion: nil)
+        }
+        
+        controller.addAction(okAction)
+        controller.addAction(cancelAction)
         self.present(controller, animated: true, completion: nil)
     }
 }
