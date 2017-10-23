@@ -12,18 +12,20 @@ class ListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var locations = [StudentLocation]()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        locations = []
+        StudentLocation.locations = []
+        self.getStudentLocations()
+    }
+    
+    private func getStudentLocations() {
         ParseClient.sharedInstance().getStudentLocations { (locations, error) in
             if let locations = locations {
-                self.locations = locations
+                StudentLocation.locations = locations
                 performUIUpdatesOnMain {
                     self.tableView.reloadData()
                 }
@@ -48,11 +50,11 @@ class ListViewController: UIViewController {
 }
 extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
+        return StudentLocation.locations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let location = locations[(indexPath as NSIndexPath).row]
+        let location = StudentLocation.locations[(indexPath as NSIndexPath).row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell")!
         cell.imageView?.image = UIImage(named: "icon_pin")
         cell.imageView?.contentMode = .scaleAspectFit
@@ -64,7 +66,7 @@ extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let location = locations[(indexPath as NSIndexPath).row]
+        let location = StudentLocation.locations[(indexPath as NSIndexPath).row]
         if location.mediaURL.prefix(8) == "https://" {
             UIApplication.shared.open(URL(string: location.mediaURL)!, options: [:], completionHandler: nil)
         } else {

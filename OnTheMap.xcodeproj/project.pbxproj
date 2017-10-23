@@ -91,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				3C2C4A361F6D2ACF0091F4D8 /* Clients */,
+				3C04D9FE1F72554600C92B1A /* StudentLocation.swift */,
 				3C9EAB2A1F877955005CDDED /* MyLocation.swift */,
 			);
 			name = Model;
@@ -147,7 +148,6 @@
 			children = (
 				3C2C4A3B1F6D327E0091F4D8 /* ParseClient.swift */,
 				3C2C4A391F6D2E410091F4D8 /* ParseConstants.swift */,
-				3C04D9FE1F72554600C92B1A /* StudentLocation.swift */,
 			);
 			name = Parse;
 			sourceTree = "<group>";

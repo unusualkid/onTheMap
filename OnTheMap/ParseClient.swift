@@ -12,7 +12,7 @@ class ParseClient : NSObject {
     
     // shared session
     var session = URLSession.shared
-    var studentLocations: [StudentLocation] = []
+//    var studentLocations: [StudentLocation] = []
     // MARK: Initializers
     
     override init() {
@@ -39,7 +39,7 @@ class ParseClient : NSObject {
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error!)")
+                sendError("There was an error with your request: \(error!.localizedDescription)")
                 return
             }
             
@@ -70,8 +70,9 @@ class ParseClient : NSObject {
                 return
             }
             
-            self.studentLocations = ParseClient.studentLocationsFromResults(results)
-            completionHandlerForGetStudentLocations(self.studentLocations, nil)
+//            self.studentLocations = ParseClient.studentLocationsFromResults(results)
+            StudentLocation.locations = ParseClient.studentLocationsFromResults(results)
+            completionHandlerForGetStudentLocations(StudentLocation.locations, nil)
         }
         task.resume()
         
@@ -96,7 +97,7 @@ class ParseClient : NSObject {
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error!)")
+                sendError("There was an error with your request: \(error!.localizedDescription)")
                 return
             }
             
@@ -168,7 +169,7 @@ class ParseClient : NSObject {
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error!)")
+                sendError("There was an error with your request: \(error!.localizedDescription)")
                 return
             }
             
@@ -235,7 +236,7 @@ class ParseClient : NSObject {
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error!)")
+                sendError("There was an error with your request: \(error!.localizedDescription)")
                 return
             }
             

@@ -13,10 +13,6 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    // The "locations" array is an array of dictionary objects that are similar to the JSON
-    // data that you can download from parse.
-    var locations = [StudentLocation]()
-    
     // We will create an MKPointAnnotation for each dictionary in "locations". The
     // point annotations will be stored in this array, and then provided to the map view.
     var annotations = [MKPointAnnotation]()
@@ -35,7 +31,7 @@ class MapViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         mapView.removeAnnotations(annotations)
-        locations = []
+        StudentLocation.locations = []
         annotations = []
         self.getStudentLocations()
     }
@@ -66,7 +62,7 @@ class MapViewController: UIViewController {
         print("MyLocation.createdAt: " + MyLocation.createdAt)
         print("MyLocation.updatedAt: " + MyLocation.updatedAt)
         mapView.removeAnnotations(annotations)
-        locations = []
+        StudentLocation.locations = []
         annotations = []
         self.getStudentLocations()
     }
@@ -89,8 +85,8 @@ class MapViewController: UIViewController {
         ParseClient.sharedInstance().getStudentLocations() { (studentLocations, error) in
             performUIUpdatesOnMain {
                 if let studentLocations = studentLocations {
-                    self.locations = studentLocations
-                    for location in self.locations {
+                    StudentLocation.locations = studentLocations
+                    for location in StudentLocation.locations {
                         
                         // Notice that the float values are being used to create CLLocationDegree values.
                         // This is a version of the Double type.
@@ -116,6 +112,7 @@ class MapViewController: UIViewController {
                     // When the array is complete, we add the annotations to the map.
                     self.mapView.addAnnotations(self.annotations)
                 } else {
+                    self.displayAlert(errorString: error)
                     print(error)
                 }
             }

@@ -24,6 +24,8 @@ struct StudentLocation {
     var updatedAt: String
     //    var ACL: String
     
+    static var locations: [StudentLocation] = []
+    
     // construct a StudentLocation from a dictionary
     init(dictionary: [String : AnyObject]) {
         objectId = dictionary[ParseClient.ResponseKeys.ObjectId] as! String

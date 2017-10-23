@@ -21,6 +21,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tap(gesture:)))
         view.addGestureRecognizer(tapGesture)
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationItem.title = "Add Location"
