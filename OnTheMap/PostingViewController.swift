@@ -24,8 +24,8 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationItem.title = "Add Location"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonPressed))
+        navigationItem.title = "Add Location"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonPressed))
     }
     
     @IBAction func findLocationButtonPressed(_ sender: Any) {
@@ -52,7 +52,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func urlTextFieldBeginEditing(_ sender: Any) {
-        self.urlTextField.text = "https://"
+        urlTextField.text = "https://"
     }
     
     func getMyLocation(completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
@@ -60,7 +60,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         geocoder.geocodeAddressString(locationTextField.text!) { (placemark, error) in
             performUIUpdatesOnMain {
                 if let error = error {
-                    self.displayAlert(errorString: "Could not geocode the entered location: \(error)")
+                    self.displayAlert(errorString: "Could not geocode the entered location. \(error.localizedDescription)")
                     completionHandler(false, error.localizedDescription)
                     return
                 }
@@ -91,7 +91,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func cancelButtonPressed() {
-        self.navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
     
     // Display alert with error message
@@ -105,7 +105,7 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
         }
         controller.addAction(okAction)
-        self.present(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
     
     // Dismiss the keyboard when tapping outside the top and bottom textfields
@@ -115,8 +115,8 @@ class PostingViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return true;
+        view.endEditing(true)
+        return true
     }
     
     // Animate the activity indicator when loading in background

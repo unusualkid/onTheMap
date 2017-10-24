@@ -12,10 +12,6 @@ import MapKit
 
 class PostingConfirmViewController: UIViewController {
     
-    //    var locationName = ""
-    //    var url = ""
-    //    var location = CLLocation(latitude: 0, longitude: 0)
-    
     @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
@@ -27,7 +23,9 @@ class PostingConfirmViewController: UIViewController {
         // Here we create the annotation and set its coordiate, title, and subtitle properties
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        mapView.centerCoordinate = coordinate
+//        mapView.centerCoordinate = coordinate
+        let region = MKCoordinateRegionMakeWithDistance(coordinate, 20000, 20000)
+        mapView.setRegion(region, animated: true)
         
         annotation.title = "\(MyLocation.firstName) \(MyLocation.lastName)"
         annotation.subtitle = MyLocation.mediaUrl

@@ -16,10 +16,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var signupButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         animateActivityIndicator(animated: false)
@@ -92,7 +88,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
+        view.endEditing(true)
         return true;
     }
     

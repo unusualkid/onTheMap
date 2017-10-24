@@ -12,10 +12,6 @@ class ListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         StudentLocation.locations = []
@@ -48,6 +44,7 @@ class ListViewController: UIViewController {
         self.present(controller, animated: true, completion: nil)
     }
 }
+
 extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return StudentLocation.locations.count

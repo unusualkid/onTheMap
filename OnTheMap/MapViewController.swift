@@ -129,7 +129,7 @@ class MapViewController: UIViewController {
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in controller.dismiss(animated: true, completion: nil)
         }
         controller.addAction(okAction)
-        self.present(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
     
     private func displayAlertForOverwrite(errorString: String?) {
@@ -151,7 +151,7 @@ class MapViewController: UIViewController {
         
         controller.addAction(okAction)
         controller.addAction(cancelAction)
-        self.present(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
 }
 

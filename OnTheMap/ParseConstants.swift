@@ -45,14 +45,4 @@ extension ParseClient {
         static let Post = "POST"
         static let Put = "PUT"
     }
-
-    // MARK: URL Keys
-    struct URLKeys {
-        
-    }
-    
-    // MARK: Parameter Keys
-    struct ParameterKeys {
-        
-    }
 }
