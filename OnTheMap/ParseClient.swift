@@ -12,8 +12,9 @@ class ParseClient : NSObject {
     
     // shared session
     var session = URLSession.shared
-//    var studentLocations: [StudentLocation] = []
-    // MARK: Initializers
+    
+    // MARK: Shared Instance
+    static let sharedInstance = ParseClient()
     
     override init() {
         super.init()
@@ -334,13 +335,5 @@ class ParseClient : NSObject {
         }
         print(components.url!)
         return components.url!
-    }
-    
-    // MARK: Shared Instance
-    class func sharedInstance() -> ParseClient {
-        struct Singleton {
-            static var sharedInstance = ParseClient()
-        }
-        return Singleton.sharedInstance
     }
 }

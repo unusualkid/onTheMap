@@ -32,7 +32,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             displayAlert(errorString: "Username or password empty.")
         } else {
             animateActivityIndicator(animated: true)
-            UdacityClient.sharedInstance().authenticateWithViewController(username: usernameTextField.text!, password: passwordTextField.text!) { (success, error) in
+            UdacityClient.sharedInstance.authenticateWithViewController(username: usernameTextField.text!, password: passwordTextField.text!) { (success, error) in
                 performUIUpdatesOnMain {
                     if success {
                         self.animateActivityIndicator(animated: false)
@@ -57,7 +57,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private func completeLogin() {
         let controller = storyboard!.instantiateViewController(withIdentifier: "NavigationController") as! UINavigationController
         present(controller, animated: true, completion: nil)
-        UdacityClient.sharedInstance().getUserData() {(result, error) in
+        UdacityClient.sharedInstance.getUserData() {(result, error) in
             if let error = error {
                 print("Could not get user data: \(error)")
             } else if let result = result {

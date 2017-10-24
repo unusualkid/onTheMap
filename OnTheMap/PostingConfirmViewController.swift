@@ -35,7 +35,7 @@ class PostingConfirmViewController: UIViewController {
     
     @IBAction func finishButtonPressed(_ sender: Any) {
         if MyLocation.createdAt != "" {
-            ParseClient.sharedInstance().putStudentLocation { (success, error) in
+            ParseClient.sharedInstance.putStudentLocation { (success, error) in
                 performUIUpdatesOnMain {
                     if success {
                         self.navigationController?.popToRootViewController(animated: true)
@@ -45,7 +45,7 @@ class PostingConfirmViewController: UIViewController {
                 }
             }
         } else {
-            ParseClient.sharedInstance().postStudentLocation { (success, error) in
+            ParseClient.sharedInstance.postStudentLocation { (success, error) in
                 performUIUpdatesOnMain {
                     if success {
                         self.navigationController?.popToRootViewController(animated: true)

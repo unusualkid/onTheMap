@@ -37,7 +37,7 @@ class MapViewController: UIViewController {
     }
     
     @objc func logout() {
-        UdacityClient.sharedInstance().logoutWithViewController() { (success, error) in
+        UdacityClient.sharedInstance.logoutWithViewController() { (success, error) in
             performUIUpdatesOnMain {
                 if success {
                     self.dismiss(animated: true, completion: nil)
@@ -68,7 +68,7 @@ class MapViewController: UIViewController {
     }
     
     @objc func addPinButtonPressed() {
-        ParseClient.sharedInstance().getOneStudentLocation { (success, error) in
+        ParseClient.sharedInstance.getOneStudentLocation { (success, error) in
             performUIUpdatesOnMain {
                 if success {
                     self.displayAlertForOverwrite(errorString: "User \(MyLocation.firstName) \(MyLocation.lastName) has already posted a Student Location. Would you like to overwrite their location?")
@@ -82,7 +82,7 @@ class MapViewController: UIViewController {
     }
     
     private func getStudentLocations() {
-        ParseClient.sharedInstance().getStudentLocations() { (studentLocations, error) in
+        ParseClient.sharedInstance.getStudentLocations() { (studentLocations, error) in
             performUIUpdatesOnMain {
                 if let studentLocations = studentLocations {
                     StudentLocation.locations = studentLocations

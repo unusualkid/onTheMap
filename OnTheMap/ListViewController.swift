@@ -19,7 +19,7 @@ class ListViewController: UIViewController {
     }
     
     private func getStudentLocations() {
-        ParseClient.sharedInstance().getStudentLocations { (locations, error) in
+        ParseClient.sharedInstance.getStudentLocations { (locations, error) in
             if let locations = locations {
                 StudentLocation.locations = locations
                 performUIUpdatesOnMain {

@@ -19,7 +19,8 @@ class UdacityClient: NSObject {
     var accountKey: String? = nil
     var sessionID : String? = nil
     
-    // MARK: Initializers
+    // MARK: Shared Instance
+    static let sharedInstance = UdacityClient()
     
     override init() {
         super.init()
@@ -266,14 +267,5 @@ class UdacityClient: NSObject {
             components.queryItems!.append(queryItem)
         }
         return components.url!
-    }
-    
-    // MARK: Shared Instance
-    
-    class func sharedInstance() -> UdacityClient {
-        struct Singleton {
-            static var sharedInstance = UdacityClient()
-        }
-        return Singleton.sharedInstance
     }
 }
